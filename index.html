@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#050816">
+
+    <title>Secure Data Transmission | Quantum Security Prototype</title>
+    <meta name="description" content="BB84 quantum key distribution simulator — a prototype for secure pharmaceutical data transmission.">
+
+    <script>document.documentElement.classList.add("js");</script>
+
+    <!-- Two typefaces, used with discipline: Inter Tight (voice) + JetBrains Mono (data) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <canvas id="field" aria-hidden="true"></canvas>
+    <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+    <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+
+    <!-- ===================== HEADER ===================== -->
+    <header class="site-header">
+        <a class="brand" href="#top" aria-label="Back to top">
+            <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
+                <rect x="7" y="7" width="18" height="18" rx="2" />
+                <rect x="7" y="7" width="18" height="18" rx="2" transform="rotate(45 16 16)" />
+            </svg>
+            <span>BB84<em>/</em>QKD</span>
+        </a>
+
+        <span class="counter" id="pageCounter" aria-hidden="true">( 00 ) <i>of</i> 04</span>
+
+        <!-- SYSTEM STATUS (ids used by script.js) -->
+        <div class="system-status" id="systemStatus" role="status" aria-live="polite">
+            <span class="status-dot"></span>
+            <span id="statusText">SYSTEM READY</span>
+        </div>
+    </header>
+
+    <aside class="side-label" aria-hidden="true"><span id="sideLabel">INTRO</span></aside>
+
+    <main id="top">
+
+        <!-- ===================== HERO ===================== -->
+        <section class="hero" data-section="Intro" data-index="0">
+            <div class="hero-glow" aria-hidden="true"></div>
+
+            <div class="wrap hero-grid">
+
+                <div class="hero-copy">
+                    <p class="eyebrow hero-line" style="--i:0">
+                        <span class="eyebrow-dot"></span>
+                        Pharmaceutical Data Security System
+                    </p>
+
+                    <h1 class="display">
+                        <span class="line"><span class="word" style="--i:1">Secure</span> <span class="word" style="--i:2">data</span></span>
+                        <span class="line"><span class="word accent" style="--i:3">transmission</span><span class="word" style="--i:4">.</span></span>
+                    </h1>
+
+                    <p class="lede hero-line" style="--i:5">
+                        A quantum key distribution prototype. Watch two parties agree on a
+                        shared secret — <em>one photon at a time</em> — before a single byte of
+                        research data is ever sent.
+                    </p>
+
+                    <div class="hero-actions hero-line" style="--i:6">
+                        <a class="btn btn-primary magnetic" href="#transmission" data-scroll>
+                            <span>Generate a key</span>
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v14m0 0l-6-6m6 6l6-6" /></svg>
+                        </a>
+                        <a class="btn btn-ghost" href="#pipeline" data-scroll>How it works</a>
+                    </div>
+
+                    <dl class="hero-meta hero-line" style="--i:7">
+                        <div><dt>Protocol</dt><dd>BB84</dd></div>
+                        <div><dt>Qubits</dt><dd data-num-bits>8</dd></div>
+                        <div><dt>Environment</dt><dd>Simulation</dd></div>
+                    </dl>
+                </div>
+
+                <!-- Fake depth with CSS perspective — driven by pointer & scroll -->
+                <div class="stage hero-line" id="stage" style="--i:3" aria-hidden="true">
+                    <div class="scene" id="scene">
+                        <div class="ring ring-a"></div>
+                        <div class="ring ring-b"></div>
+                        <div class="ring ring-c"></div>
+                        <div class="core"></div>
+                        <div class="orbit o1"><i></i></div>
+                        <div class="orbit o2"><i></i></div>
+                        <div class="tag tag-z">Z <small>basis</small></div>
+                        <div class="tag tag-x">X <small>basis</small></div>
+                        <div class="tag tag-bit">0 <small>1</small></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="scroll-cue" aria-hidden="true"><span>Scroll</span><i></i></div>
+        </section>
+
+
+        <!-- ===================== 01 PIPELINE ===================== -->
+        <section class="chapter" id="pipeline" data-section="Pipeline" data-index="1">
+            <span class="ghost" data-parallax="-0.18" aria-hidden="true">01</span>
+
+            <div class="wrap">
+                <header class="chapter-head reveal">
+                    <p class="eyebrow">( 01 ) of four — Transmission process</p>
+                    <h2 class="title">Five stages.<br><em>One shared secret.</em></h2>
+                </header>
+
+                <div class="two-col reveal" style="--d:1">
+                    <div>
+                        <h3 class="mini">A. What you see</h3>
+                        <p>Five steps light up in order as the simulation runs — from random bits to a verified key.</p>
+                    </div>
+                    <div>
+                        <h3 class="mini">B. What's actually happening</h3>
+                        <p>BB84 encodes bits into photon states using one of two bases, <strong>Z or X</strong>. Anyone measuring in the wrong basis gets noise — that's the whole security model.</p>
+                    </div>
+                </div>
+
+                <!-- PROCESS TRACKER (ids used by script.js) -->
+                <div class="process-grid reveal" id="processGrid" style="--d:2">
+
+                    <div class="process-step" id="stepGeneration">
+                        <span class="process-number">01</span>
+                        <div>
+                            <strong>State Generation</strong>
+                            <span>Random bits</span>
+                        </div>
+                    </div>
+
+                    <div class="process-step" id="stepEncoding">
+                        <span class="process-number">02</span>
+                        <div>
+                            <strong>Quantum Encoding</strong>
+                            <span>State preparation</span>
+                        </div>
+                    </div>
+
+                    <div class="process-step" id="stepMeasurement">
+                        <span class="process-number">03</span>
+                        <div>
+                            <strong>Measurement</strong>
+                            <span>State detection</span>
+                        </div>
+                    </div>
+
+                    <div class="process-step" id="stepSifting">
+                        <span class="process-number">04</span>
+                        <div>
+                            <strong>Key Sifting</strong>
+                            <span>Basis reconciliation</span>
+                        </div>
+                    </div>
+
+                    <div class="process-step" id="stepVerification">
+                        <span class="process-number">05</span>
+                        <div>
+                            <strong>Verification</strong>
+                            <span>Key agreement</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <p class="closer reveal" style="--d:3">
+                    <b>Next →</b>
+                    <span>Before any of that, someone has to speak. <em>Alice prepares her photons.</em></span>
+                </p>
+            </div>
+        </section>
+
+
+        <!-- ===================== 02 TRANSMISSION ===================== -->
+        <section class="chapter" id="transmission" data-section="Transmission" data-index="2">
+            <span class="ghost" data-parallax="-0.18" aria-hidden="true">02</span>
+
+            <div class="wrap">
+                <header class="chapter-head reveal">
+                    <p class="eyebrow">( 02 ) of four — Transmission parameters</p>
+                    <h2 class="title">Alice prepares.<br><em>Bob guesses.</em></h2>
+                </header>
+
+                <div class="two-col reveal" style="--d:1">
+                    <div>
+                        <h3 class="mini">A. What you see</h3>
+                        <p>Three rows of data: raw bits, random bases, and the photon states that carry them.</p>
+                    </div>
+                    <div>
+                        <h3 class="mini">B. What's actually happening</h3>
+                        <p>Alice picks a random bit and a random basis for every photon. Bob doesn't know her bases — he has to <strong>guess</strong>. Roughly half his guesses will be wrong.</p>
+                    </div>
+                </div>
+
+                <div class="stack">
+
+                    <!-- BITS -->
+                    <article class="card data-card reveal spot" style="--d:1">
+                        <div class="data-heading">
+                            <span class="step-number">01</span>
+                            <div>
+                                <h3>Generated Bit Sequence</h3>
+                                <span class="data-description">Random binary sequence</span>
+                            </div>
+                        </div>
+                        <div class="data-box" id="bits"><span class="placeholder">Waiting for generation…</span></div>
+                    </article>
+
+                    <!-- BASES -->
+                    <article class="card data-card reveal spot" style="--d:2">
+                        <div class="data-heading">
+                            <span class="step-number">02</span>
+                            <div>
+                                <h3>Selected Basis Sequence</h3>
+                                <span class="data-description">Random measurement basis selection</span>
+                            </div>
+                        </div>
+                        <div class="data-box" id="bases"><span class="placeholder">Waiting for generation…</span></div>
+                    </article>
+
+                    <!-- PHOTONS -->
+                    <article class="card data-card reveal spot" style="--d:3">
+                        <div class="data-heading">
+                            <span class="step-number">03</span>
+                            <div>
+                                <h3>Encoded Quantum States</h3>
+                                <span class="data-description">Polarisation of each photon prepared for transmission</span>
+                            </div>
+                        </div>
+                        <div class="data-box" id="photons"><span class="placeholder">Waiting for encoding…</span></div>
+                    </article>
+
+                </div>
+
+                <!-- ACTION -->
+                <div class="action-area reveal">
+                    <button id="generateKeyButton" class="btn btn-primary btn-xl magnetic" type="button">
+                        <span class="btn-label">Generate secure key</span>
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m0 0l-6-6m6 6l-6 6" /></svg>
+                    </button>
+                    <p class="action-description">Initiates a new BB84 quantum key distribution simulation.</p>
+                </div>
+
+                <p class="closer reveal">
+                    <b>Next →</b>
+                    <span>Bob guessed wrong about half the time. <em>So what's left to trust?</em></span>
+                </p>
+            </div>
+        </section>
+
+
+        <!-- ===================== 03 VERIFICATION ===================== -->
+        <section class="chapter" id="verification" data-section="Verification" data-index="3">
+            <span class="ghost" data-parallax="-0.18" aria-hidden="true">03</span>
+
+            <div class="wrap">
+                <header class="chapter-head reveal">
+                    <p class="eyebrow">( 03 ) of four — Key verification</p>
+                    <h2 class="title">Throw away the wrong guesses.<br><em>Keep what's true.</em></h2>
+                </header>
+
+                <div class="two-col reveal" style="--d:1">
+                    <div>
+                        <h3 class="mini">A. What you see</h3>
+                        <p>The sifted key, how many bits agree, and the resulting agreement rate.</p>
+                    </div>
+                    <div>
+                        <h3 class="mini">B. What's actually happening</h3>
+                        <p>Alice and Bob publicly compare <strong>which bases</strong> they used — never the bits. Where bases match, the bits match. Everything else is discarded.</p>
+                    </div>
+                </div>
+
+                <div class="verification-grid">
+
+                    <div class="card verification-card spot reveal" style="--d:1">
+                        <span class="card-label">Sifted key</span>
+                        <div class="verification-value chips" id="siftedKey">—</div>
+                    </div>
+
+                    <div class="card verification-card spot reveal" style="--d:2">
+                        <span class="card-label">Key agreement</span>
+                        <div class="verification-value big" id="matchingBits">—</div>
+                    </div>
+
+                    <div class="card verification-card spot reveal" style="--d:3">
+                        <span class="card-label">Agreement rate</span>
+                        <div class="verification-value big" id="matchRate">—</div>
+                    </div>
+
+                </div>
+
+                <!-- VERIFICATION STATUS -->
+                <div class="verification-status is-idle reveal" id="verificationStatus">
+                    <span class="verification-icon" aria-hidden="true"></span>
+                    <div>
+                        <strong id="verificationTitle">Awaiting Transmission</strong>
+                        <p id="verificationMessage">Generate a secure key to begin verification.</p>
+                    </div>
+                </div>
+
+                <!-- TECHNICAL DETAILS -->
+                <div class="card technical-panel reveal">
+                    <details>
+                        <summary>
+                            <span>Technical transmission details</span>
+                            <small>View simulation data</small>
+                        </summary>
+
+                        <div class="technical-content">
+
+                            <div class="technical-item">
+                                <span class="card-label">Measurement basis sequence</span>
+                                <div class="data-box" id="bobBases">—</div>
+                            </div>
+
+                            <div class="technical-item">
+                                <span class="card-label">Measured bit sequence</span>
+                                <div class="data-box" id="bobKey">—</div>
+                            </div>
+
+                            <div class="technical-item">
+                                <span class="card-label">Matching basis positions</span>
+                                <div class="data-box" id="matchingPositions">—</div>
+                            </div>
+
+                        </div>
+                    </details>
+                </div>
+
+                <p class="closer reveal">
+                    <b>Next →</b>
+                    <span>A key is only as honest as its context. <em>Here's what this prototype is — and isn't.</em></span>
+                </p>
+            </div>
+        </section>
+
+
+        <!-- ===================== 04 SUMMARY ===================== -->
+        <section class="chapter" id="summary" data-section="Overview" data-index="4">
+            <span class="ghost" data-parallax="-0.18" aria-hidden="true">04</span>
+
+            <div class="wrap">
+                <header class="chapter-head reveal">
+                    <p class="eyebrow">( 04 ) of four — Security summary</p>
+                    <h2 class="title">Transmission<br><em>overview.</em></h2>
+                </header>
+
+                <div class="info-grid">
+
+                    <div class="card info-card spot reveal" style="--d:1">
+                        <span class="card-label">Protocol</span>
+                        <strong>BB84</strong>
+                    </div>
+
+                    <div class="card info-card spot reveal" style="--d:2">
+                        <span class="card-label">Transmission size</span>
+                        <strong><span data-num-bits>8</span> Bits</strong>
+                    </div>
+
+                    <div class="card info-card spot reveal" style="--d:3">
+                        <span class="card-label">Key method</span>
+                        <strong>Quantum Key Distribution</strong>
+                    </div>
+
+                    <div class="card info-card spot reveal" style="--d:4">
+                        <span class="card-label">Environment</span>
+                        <strong>Simulation</strong>
+                    </div>
+
+                </div>
+
+                <aside class="note reveal">
+                    This is a classical software simulation of BB84. It uses no quantum hardware and no actual quantum communication.
+                </aside>
+            </div>
+        </section>
+
+
+        <!-- ===================== CLOSING ===================== -->
+        <section class="finale" data-section="Finale" data-index="4">
+            <div class="wrap">
+                <p class="eyebrow reveal">(*) The secret</p>
+                <h2 class="title huge reveal" style="--d:1">None of it<br>is <em>decoration.</em></h2>
+                <p class="lede reveal" style="--d:2">
+                    Security isn't added at the end. It's a key agreed in public,
+                    known only to two — <em>and checked before anything is sent.</em>
+                </p>
+                <div class="reveal" style="--d:3">
+                    <a class="btn btn-primary btn-xl magnetic" href="#transmission" data-scroll data-rerun>
+                        <span>Run another transmission</span>
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V6m0 0l-6 6m6-6l6 6" /></svg>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+
+    <!-- ===================== FOOTER ===================== -->
+    <footer class="site-footer">
+        <p>Internal Prototype — Quantum-Secure Pharmaceutical Data Transmission</p>
+        <span>BB84 Simulation Environment • Not intended for production use</span>
+    </footer>
+
+
+    <!-- SCRIPTS -->
+    <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
+    <script src="alice.js" defer></script>
+    <script src="bob.js" defer></script>
+    <script src="script.js" defer></script>
+    <script src="motion.js" defer></script>
+
+</body>
+
+</html>
